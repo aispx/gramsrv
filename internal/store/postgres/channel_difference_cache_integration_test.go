@@ -26,7 +26,7 @@ func TestChannelDifferenceBaseLoaderRejectsChangedStableCutPostgres(t *testing.T
 		}
 		_, _ = pool.Exec(ctx, "DELETE FROM users WHERE id = $1", owner.ID)
 	})
-	channels := NewChannelStore(pool)
+	channels := newTestChannelStore(pool)
 	created, err := channels.CreateChannel(ctx, domain.CreateChannelRequest{
 		CreatorUserID: owner.ID, Title: "Difference Cut " + suffix, Megagroup: true, Date: 1701000200,
 	})
@@ -90,7 +90,7 @@ func TestChannelDifferenceBaseCacheSharesDurablePageAcrossViewersPostgres(t *tes
 	})
 
 	cache := NewChannelDifferenceBaseCache(32, 8<<20, time.Minute)
-	channels := NewChannelStore(pool, WithChannelDifferenceBaseCache(cache))
+	channels := newTestChannelStore(pool, WithChannelDifferenceBaseCache(cache))
 	created, err := channels.CreateChannel(ctx, domain.CreateChannelRequest{
 		CreatorUserID: owner.ID,
 		Title:         "Shared Difference " + suffix,
@@ -164,7 +164,7 @@ func TestChannelDifferenceRetentionInvalidatesSharedBasePostgres(t *testing.T) {
 	})
 
 	cache := NewChannelDifferenceBaseCache(32, 8<<20, time.Minute)
-	channels := NewChannelStore(pool, WithChannelDifferenceBaseCache(cache))
+	channels := newTestChannelStore(pool, WithChannelDifferenceBaseCache(cache))
 	created, err := channels.CreateChannel(ctx, domain.CreateChannelRequest{
 		CreatorUserID: owner.ID, Title: "Difference Retention " + suffix, Megagroup: true, Date: 1701000100,
 	})
